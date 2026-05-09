@@ -30,11 +30,11 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## データソース
 
-- Notion 案件DB: 検証用CRM (`35a096ae451e805f8b1ae2396e6319ee`) 配下に作成する `Deals` データベース
+- Notion 案件DB: `NOTION_CRM_PAGE_ID` 配下に作成する `Deals` データベース
 
 ## 出力先
 
-- Notion 親ページ: 検証用ダッシュボード (`35a096ae451e80ec87c1df8cd0056867`)
+- Notion 親ページ: `NOTION_DASHBOARD_PAGE_ID`
 - 生成物: パイプライン実行毎に `Deal Review Dashboard YYYY-MM-DD` ページを新規作成
 
 ## ガードレール
@@ -46,7 +46,7 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## パイプライン実行手順
 
-1. Notion MCPで `Pipeline Review` ビュー（`view://35b096ae-451e-8119-919b-000cb7ed3a1c`）を fetch（トリアージ済み案件のみ取得）
+1. Notion MCPで `Pipeline Review` ビュー（`NOTION_PIPELINE_VIEW_ID`）を fetch（トリアージ済み案件のみ取得）
 2. **Deal Triage** (`skills/deal-triage.md`): fetch 結果を確認・出力（Notion側でフィルタ済みのため追加処理不要）
 3. Deal Strategist: 各案件のMEDDPICCスコアと verdict を生成（トリアージ通過案件のみ）
 4. Pipeline Analyst: 3の結果＋トリアージ通過案件データから健全性・速度・予測を生成

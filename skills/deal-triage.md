@@ -5,8 +5,8 @@ description: Pre-evaluation filter that selects which deals from the Notion CRM 
 
 # Deal Triage
 
-Notion DBから全案件を取得した後、以下の条件でエージェント評価対象を絞り込む。
-条件はすべて AND 結合。除外条件が優先される。
+Notion の `Pipeline Review` ビューから案件を取得した後、サニタイズチェックを実施してエージェント評価対象を確定する。
+ステージ・活動日数フィルタは Notion ビュー側で完結しているため、ここでは実施しない。
 
 ## トリアージ条件
 

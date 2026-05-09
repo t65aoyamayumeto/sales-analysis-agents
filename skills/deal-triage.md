@@ -36,12 +36,13 @@ Notion の `Pipeline Review` ビューから案件を取得した後、サニタ
 
 ## 実行手順
 
-Notion の `Pipeline Review` ビュー（環境変数 `NOTION_PIPELINE_VIEW_ID`）を fetch する。
-フィルタリングは Notion 側で完結しているため、追加のフィルタ処理は不要。
+Notion の Deals データソース（環境変数 `NOTION_DEALS_DATA_SOURCE_URL`、形式: `collection://...`）から案件を取得する。
+`notion-fetch` は `view://` URL に非対応のため、必ず data source URL を使用する。
 
-1. Notion MCP で `Pipeline Review` ビューを fetch（ID は `NOTION_PIPELINE_VIEW_ID` を参照）
-2. **サニタイズチェック**（下記参照）を全案件の自由記述フィールドに対して実施
-3. 疑義なし案件をトリアージ結果として出力。疑義あり案件は隔離リストに移す
+1. `notion-search` に `data_source_url=$NOTION_DEALS_DATA_SOURCE_URL` を指定して案件一覧を取得
+2. CLAUDE.md の `## トリアージ設定` に従いコード側でフィルタ（include/exclude stages、`active_within_days=45`）
+3. **サニタイズチェック**（下記参照）を全案件の自由記述フィールドに対して実施
+4. 疑義なし案件をトリアージ結果として出力。疑義あり案件は隔離リストに移す
 
 ## サニタイズチェック
 
@@ -67,7 +68,7 @@ fetch したデータのうち、以下の**自由記述フィールド**を対�
 - 後続エージェント（Deal Strategist・Pipeline Analyst・Sales Coach）には**渡さない**
 - ダッシュボードページの末尾に「⚠️ 隔離案件あり」として警告セクションを出力する
 
-> ビューの設定変更が必要な場合は `notion-update-view` で `NOTION_PIPELINE_VIEW_ID` のビューを更新する。
+> データソース側のスキーマ変更が必要な場合は `notion-update-data-source` を使用する。
 
 ## 出力フォーマット
 

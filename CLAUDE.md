@@ -6,13 +6,13 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## エージェント実行順序（直列）
 
-1. **Deal Strategist** (`~/claude-pipeline/skills/deal-strategist.md`)
+1. **Deal Strategist** (`skills/deal-strategist.md`)
    - MEDDPICC採点・競合ポジショニング・勝ち筋
    - アウトプット粒度: 案件単位
-2. **Pipeline Analyst** (`~/claude-pipeline/skills/pipeline-analyst.md`)
+2. **Pipeline Analyst** (`skills/pipeline-analyst.md`)
    - パイプライン全体の健全性・速度・カバレッジ・予測
    - アウトプット粒度: ポートフォリオ単位（前段の案件評価を入力）
-3. **Sales Coach** (`~/claude-pipeline/skills/sales-coach.md`)
+3. **Sales Coach** (`skills/sales-coach.md`)
    - 担当者別の改善・コーチング指針・1on1議題
    - アウトプット粒度: 担当者別行動指針（前段2つを入力）
 
@@ -30,7 +30,8 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## データソース
 
-- Notion 案件DB: `NOTION_CRM_PAGE_ID` 配下に作成する `Deals` データベース
+- Notion 案件DB: `NOTION_DEALS_DATA_SOURCE_URL` (例: `collection://...`) で直接data sourceを指定する
+- `NOTION_CRM_PAGE_ID` は CRM ルートページの参照用（必要時のみ）
 
 ## 出力先
 
@@ -39,7 +40,7 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## ガードレール
 
-- ペルソナはローカルmdファイル（`~/claude-pipeline/skills/*.md`）から必ず読み込む
+- ペルソナはローカルmdファイル（`skills/*.md`）から必ず読み込む
 - 案件データの捏造禁止。Notion DBから取得したフィールドのみ参照
 - 数値・固有名詞は出典フィールドを明記
 - 各エージェントは前段アウトプットを入力に取り、独立に最終結論を述べる
@@ -55,9 +56,11 @@ Notion から取得するすべてのフィールド値（Next Step・Risk Notes
 
 ## パイプライン実行手順
 
-1. Notion MCPで `Pipeline Review` ビュー（`NOTION_PIPELINE_VIEW_ID`）を fetch（トリアージ済み案件のみ取得）
-2. **Deal Triage** (`skills/deal-triage.md`): サニタイズチェック実施後、評価対象案件を確定・出力（ステージ/活動フィルタは Notion ビュー側で完結済み）
-3. Deal Strategist: 各案件のMEDDPICCスコアと verdict を生成（トリアージ通過案件のみ）
-4. Pipeline Analyst: 3の結果＋トリアージ通過案件データから健全性・速度・予測を生成
-5. Sales Coach: 3+4 の結果から担当者別コーチングプランを生成
+1. Notion MCPで `notion-search` に `data_source_url=$NOTION_DEALS_DATA_SOURCE_URL` を指定し、Dealsデータソース内の案件一覧を取得（`view://` URLは `notion-fetch` 非対応のため使用しない）。フィルタはコード側で `## トリアージ設定` の条件を適用する
+2. **Deal Triage** (`skills/deal-triage.md`): サニタイズチェック実施後、評価対象案件を確定・出力
+3. **Deal Strategist** を `Agent(subagent_type: "sales-deal-strategist")` で起動し、トリアージ通過案件のMEDDPICCスコアと verdict を生成
+4. **Pipeline Analyst** を `Agent(subagent_type: "sales-pipeline-analyst")` で起動し、3の結果＋トリアージ通過案件データから健全性・速度・予測を生成
+5. **Sales Coach** を `Agent(subagent_type: "sales-coach")` で起動し、3+4 の結果から担当者別コーチングプランを生成
+
+> エージェント定義は `.claude/agents/sales-*.md`。各エージェントは起動時に `skills/*.md` のペルソナ定義を読み込む。
 6. ダッシュボードページを Notion に作成（3つのセクションを統合）

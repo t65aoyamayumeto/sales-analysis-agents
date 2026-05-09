@@ -36,13 +36,13 @@ Notion DBから全案件を取得した後、以下の条件でエージェン�
 
 ## 実行手順
 
-Notion の `Pipeline Review` ビュー（`view://NOTION_PIPELINE_VIEW_ID_REDACTED`）を fetch する。
+Notion の `Pipeline Review` ビュー（環境変数 `NOTION_PIPELINE_VIEW_ID`）を fetch する。
 フィルタリングは Notion 側で完結しているため、追加のフィルタ処理は不要。
 
-1. Notion MCP で `Pipeline Review` ビューを fetch
+1. Notion MCP で `Pipeline Review` ビューを fetch（ID は `NOTION_PIPELINE_VIEW_ID` を参照）
 2. 返却された案件リストをそのままトリアージ結果として出力
 
-> ビューの設定変更が必要な場合は `notion-update-view` で `view://NOTION_PIPELINE_VIEW_ID_REDACTED` を更新する。
+> ビューの設定変更が必要な場合は `notion-update-view` で `NOTION_PIPELINE_VIEW_ID` のビューを更新する。
 
 ## 出力フォーマット
 

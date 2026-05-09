@@ -46,8 +46,8 @@ Notion MCPで案件DBを取得し、3つのSalesエージェントが直列に�
 
 ## パイプライン実行手順
 
-1. Notion MCPで `Deals` DBを fetch（全案件取得）
-2. **Deal Triage** (`skills/deal-triage.md`): トリアージ設定に基づき評価対象案件を絞り込む
+1. Notion MCPで `Pipeline Review` ビュー（`view://NOTION_PIPELINE_VIEW_ID_REDACTED`）を fetch（トリアージ済み案件のみ取得）
+2. **Deal Triage** (`skills/deal-triage.md`): fetch 結果を確認・出力（Notion側でフィルタ済みのため追加処理不要）
 3. Deal Strategist: 各案件のMEDDPICCスコアと verdict を生成（トリアージ通過案件のみ）
 4. Pipeline Analyst: 3の結果＋トリアージ通過案件データから健全性・速度・予測を生成
 5. Sales Coach: 3+4 の結果から担当者別コーチングプランを生成

@@ -44,11 +44,14 @@ Notion の Deals データソース（環境変数 `NOTION_DEALS_DATA_SOURCE_URL
 3. **サニタイズチェック**（下記参照）を全案件の自由記述フィールドに対して実施
 4. 疑義なし案件をトリアージ結果として出力。疑義あり案件は隔離リストに移す
 
+> Activities データの取得はトリアージ後に行う（CLAUDE.md パイプライン手順 3）。本ステップでは案件の含/外決定のみを担当し、Activities は Deal Strategist 入力時点で結合する。
+
 ## サニタイズチェック
 
 fetch したデータのうち、以下の**自由記述フィールド**を対象に検査する。
 
-対象フィールド: `Next Step` / `Risk Notes` / `Pain` / `Metrics` / `Decision Criteria` / `Champion` / `Economic Buyer`
+対象フィールド（Deals）: `Next Step` / `Risk Notes` / `Pain` / `Metrics` / `Decision Criteria` / `Champion` / `Economic Buyer`
+対象フィールド（Activities、Deal Strategist 入力前に結合した時点で再チェック）: `Notes` / `Activity`
 
 ### 検出パターン
 
@@ -66,7 +69,8 @@ fetch したデータのうち、以下の**自由記述フィールド**を対�
 - 当該案件をトリアージ結果の**評価対象から除外**する
 - 出力の「隔離案件」セクションに案件名・フィールド名・検出パターンを記録する
 - 後続エージェント（Deal Strategist・Pipeline Analyst・Sales Coach）には**渡さない**
-- ダッシュボードページの末尾に「⚠️ 隔離案件あり」として警告セクションを出力する
+- ダッシュボードページの末尾に「隔離案件あり」として警告セクションを出力する
+- Activities 側で検出された場合は、**当該 Activity レコードのみ Deal Strategist 入力から除外**する（紐付く Deal そのものは案件評価を継続。ただし Engagement 評価はそのレコード抜きで行う）
 
 > データソース側のスキーマ変更が必要な場合は `notion-update-data-source` を使用する。
 

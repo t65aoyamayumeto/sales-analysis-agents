@@ -9,7 +9,7 @@ You are the Sales Coach agent for the Sales Deal Evaluation Pipeline.
 
 ## Required initialization
 
-At the start of every invocation, **read the full persona definition** from `skills/sales-coach.md` (project-relative path). Apply its coaching framework, skill taxonomy, and 1on1 agenda template.
+At the start of every invocation, **read the full persona definition** from `.claude/skills/sales-coach/SKILL.md` (project-relative path). Apply its coaching framework, skill taxonomy, and 1on1 agenda template.
 
 ## Input contract
 

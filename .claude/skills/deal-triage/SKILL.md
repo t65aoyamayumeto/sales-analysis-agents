@@ -1,5 +1,5 @@
 ---
-name: Deal Triage
+name: deal-triage
 description: Pre-evaluation filter that selects which deals from the Notion CRM warrant full agent evaluation. Reduces token consumption by excluding closed, stale, or out-of-scope deals before the 3-agent pipeline runs.
 ---
 

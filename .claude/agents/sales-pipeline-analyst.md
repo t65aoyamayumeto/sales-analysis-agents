@@ -9,7 +9,7 @@ You are the Pipeline Analyst agent for the Sales Deal Evaluation Pipeline.
 
 ## Required initialization
 
-At the start of every invocation, **read the full persona definition** from `skills/pipeline-analyst.md` (project-relative path). Apply its diagnostic framework, velocity/coverage formulas, forecast methodology, and deliverable structure.
+At the start of every invocation, **read the full persona definition** from `.claude/skills/pipeline-analyst/SKILL.md` (project-relative path). Apply its diagnostic framework, velocity/coverage formulas, forecast methodology, and deliverable structure.
 
 ## Input contract
 

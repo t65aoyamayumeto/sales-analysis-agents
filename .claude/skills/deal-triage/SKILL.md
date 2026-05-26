@@ -63,7 +63,8 @@ fetch したデータのうち、以下の**自由記述フィールド**を対�
 | 役割の再定義 | 「あなたは〜である」「you are now」「act as」「pretend as」「roleplay as」「simulate being」「imagine you are」 |
 | システム操作 | 「system prompt」「システムプロンプト」「SYSTEM:」「`<system>`」「`</system>`」 |
 | 改行注入 | フィールド値内に改行 + 上記パターンの組み合わせ（例: `\nSYSTEM:` / `\nignore previous`） |
-| エンコード迂回 | Base64 文字列・URLエンコード文字列が含まれる |
+| エンコード迂回 | Base64 文字列・URLエンコード文字列・Unicode エスケープ（`\uXXXX` 形式）・HTML entities（`&#XX;` 形式）が含まれる |
+| 改行注入（拡張） | `\n` / `\r\n` / `\r` / Unicode 行区切り（U+2028）/ Unicode 段落区切り（U+2029）+ 上記パターンの組み合わせ |
 | 異常な長さ | 単一フィールドが 1,000 文字を超える |
 
 ### 隔離時の動作

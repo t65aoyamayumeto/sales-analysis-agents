@@ -45,6 +45,55 @@ CLAUDE.md                    パイプライン全体の設計図・実行手順
 - [Claude Code](https://claude.ai/code) がインストール済みであること
 - Notion MCP が Claude Code に接続済みであること
 - 後述の環境変数が設定済みであること
+- Notion 側に以下のDB構造が用意されていること
+
+## Notion DB構造
+
+### Deals DB
+
+案件の基本情報を管理するメインDB。
+
+| フィールド名 | 型 | 用途 |
+|---|---|---|
+| Name | Title | 案件名 |
+| Stage | Select | Prospect / Qualify / Discovery / Proposal / Negotiation / Closed Won / Closed Lost |
+| Amount | Number | 案件金額 |
+| Close Date | Date | クローズ予定日 |
+| Last Activity | Date | 最終活動日（トリアージ判定に使用） |
+| Owner | Person | 担当者 |
+| Next Step | Text | 次のアクション（自由記述） |
+| Risk Notes | Text | リスクメモ（自由記述） |
+| Pain | Text | 顧客の課題（自由記述） |
+| Metrics | Text | 定量的な価値指標（自由記述） |
+| Decision Criteria | Text | 評価基準（自由記述） |
+| Champion | Text | 社内推進者（自由記述） |
+| Economic Buyer | Text | 最終意思決定者（自由記述） |
+
+### Activities DB
+
+商談・連絡履歴を管理するDB。Deals DBとリレーションで紐付ける。
+
+| フィールド名 | 型 | 用途 |
+|---|---|---|
+| Name | Title | 活動名 |
+| Deal | Relation | Deals DB へのリレーション |
+| Type | Select | Call / Meeting / Email / Task / Note |
+| Outcome | Select | Planned / Completed / No show |
+| Activity Date | Date | 活動日 |
+| Owner | Person | 実施者 |
+| Notes | Text | 活動メモ（自由記述） |
+| Activity | Text | 活動内容（自由記述） |
+
+### Quota DB
+
+担当者別の売上目標を管理するDB。Pipeline Analyst のカバレッジ計算に使用する。
+
+| フィールド名 | 型 | 用途 |
+|---|---|---|
+| Name | Title | 担当者名 |
+| Owner | Person | 担当者 |
+| Quota | Number | 売上目標額 |
+| Period | Select | 対象クォーター（例: 2026-Q2） |
 
 ## セットアップ
 
@@ -72,10 +121,6 @@ cp .env.example .env
 
 `collection://` URL の取得方法は Notion MCP の `notion-search` をデータソースに対して実行し、レスポンスの `data_source_url` フィールドを確認する。
 
-**3. Notion側のDB構成**
-
-- **Deals DB**: Stage / Amount / Close Date / Last Activity / Owner / Next Step / Risk Notes / Pain / Metrics / Decision Criteria / Champion / Economic Buyer フィールドを含む
-- **Activities DB**: Deal（リレーション） / Type / Outcome / Activity Date / Owner / Notes / Activity フィールドを含む
 
 ## 実行方法
 

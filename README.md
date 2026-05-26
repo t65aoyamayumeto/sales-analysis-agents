@@ -51,7 +51,7 @@ CLAUDE.md                    パイプライン全体の設計図・実行手順
 **1. リポジトリをクローン**
 
 ```bash
-git clone https://github.com/your-org/sales-analysis-agents.git
+git clone https://github.com/t65aoyamayumeto/sales-analysis-agents.git
 cd sales-analysis-agents
 ```
 

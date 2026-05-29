@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pipeline-dashboard",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3002", "/Users/aoyamamuto/projects/mcp-ui-demo/sales-pipeline-ui/public"],
+      "port": 3002
+    }
+  ]
+}

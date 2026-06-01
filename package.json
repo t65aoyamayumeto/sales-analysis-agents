@@ -1,0 +1,11 @@
+{
+  "name": "sales-analysis-agents",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "dotenv -e .env -- claude"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.4"
+  }
+}

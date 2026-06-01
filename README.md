@@ -43,8 +43,8 @@ CLAUDE.md                    パイプライン全体の設計図・実行手順
 ## 前提条件
 
 - [Claude Code](https://claude.ai/code) がインストール済みであること
+- [Node.js](https://nodejs.org/) がインストール済みであること（`npx` が使えること）
 - Notion MCP が Claude Code に接続済みであること
-- 後述の環境変数が設定済みであること
 - Notion 側に以下のDB構造が用意されていること
 
 ## Notion DB構造
@@ -106,10 +106,11 @@ cd sales-analysis-agents
 
 **2. 環境変数を設定**
 
-`.env.example` を参考に `.env` を作成する。
+`.env.example` を参考に `.env` を作成し、各変数に値を入力する。
 
 ```bash
 cp .env.example .env
+# エディタで .env を開いて値を入力する
 ```
 
 | 変数名 | 説明 |
@@ -121,6 +122,19 @@ cp .env.example .env
 
 `collection://` URL の取得方法は Notion MCP の `notion-search` をデータソースに対して実行し、レスポンスの `data_source_url` フィールドを確認する。
 
+**3. Claude Code を起動**
+
+```bash
+./start.sh
+```
+
+または npm 経由でも起動できる。
+
+```bash
+npm start
+```
+
+これで `.env` の環境変数が自動的に読み込まれた状態で Claude Code が起動する。
 
 ## 実行方法
 

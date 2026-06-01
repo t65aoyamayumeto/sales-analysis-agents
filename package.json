@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "dotenv -e .env -- claude"
+    "start": "npx --yes dotenv-cli@7.4.4 -e .env -- claude"
   },
   "devDependencies": {
     "dotenv-cli": "^7.4.4"

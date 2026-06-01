@@ -7,4 +7,4 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-exec npx --yes dotenv-cli -e .env -- claude "$@"
+exec npx --yes dotenv-cli@7.4.4 -e .env -- claude "$@"

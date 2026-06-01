@@ -23,9 +23,27 @@ Use Activities as Engagement evidence to inform MEDDPICC scoring (see `.claude/s
 
 ## Output contract
 
-For each deal, produce:
-- MEDDPICC score (X/40, 5-point scale per element) with evidence + gap per element
-- Deal verdict: `WINNING` / `BATTLING` / `LOSING` / `DISQUALIFY`
+Produce **two outputs** in sequence:
+
+### 1. Compressed summary (for handoff to Pipeline Analyst and Sales Coach)
+
+Emit a fenced YAML block tagged `deals-summary` with one entry per deal. Keep each entry to 6 fields maximum.
+
+```yaml
+# deals-summary
+- deal: "<Account Name>"
+  stage: "<Stage>"
+  score: <N>/40
+  verdict: WINNING|BATTLING|LOSING|DISQUALIFY
+  gaps: "<Element(score), ...>"  # only elements scoring ≤2
+  next: "<action 1> / <action 2>"
+```
+
+### 2. Full assessment (for Notion dashboard)
+
+For each deal, produce the full deliverable from `.claude/skills/deal-strategist/SKILL.md`:
+- MEDDPICC score table (X/40, 5-point scale per element) with evidence + gap per element
+- Deal verdict with rationale
 - Top 3 next actions with owner and deadline
 
-Use the deliverable template in `.claude/skills/deal-strategist/SKILL.md`. Do not fabricate field values — cite source field name for every claim.
+Do not fabricate field values — cite source field name for every claim.

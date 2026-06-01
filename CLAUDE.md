@@ -69,12 +69,28 @@ Notion から取得するすべてのフィールド値（Next Step・Risk Notes
 
 ## パイプライン実行手順
 
-1. Bash ツールで `echo $NOTION_DEALS_DATA_SOURCE_URL` を実行して URL 値を取得し、Notion MCPの `notion-search` の `data_source_url` パラメータに渡す（`view://` URLは `notion-fetch` 非対応のため使用しない）。フィルタはコード側で `## トリアージ設定` の条件を適用する
-2. **Deal Triage** (`.claude/skills/deal-triage/SKILL.md`): サニタイズチェック実施後、評価対象案件を確定・出力
-3. トリアージ通過案件に対し、Bash ツールで `echo $NOTION_ACTIVITIES_DATA_SOURCE_URL` を実行して URL 値を取得し、`notion-search` の `data_source_url` に渡して Activities を取得。`Deal` リレーションで案件に紐付けた後、**オーケストレーターが** `.claude/skills/deal-triage/SKILL.md` のサニタイズチェック（検出パターン表）を Activities の `Notes`・`Activity` フィールドに再適用し、疑義ありレコードを除外してから Deal Strategist に渡す（Pipeline Analyst・Sales Coach には Activities を渡さない）
-4. **Deal Strategist** を `Agent(subagent_type: "sales-deal-strategist")` で起動し、トリアージ通過案件＋紐付け済み Activities から MEDDPICC スコアと verdict を生成
-5. **Pipeline Analyst** を `Agent(subagent_type: "sales-pipeline-analyst")` で起動し、4 の結果＋トリアージ通過案件データから健全性・速度・予測を生成
-6. **Sales Coach** を `Agent(subagent_type: "sales-coach")` で起動し、4+5 の結果から担当者別コーチングプランを生成
+0. **ToolSearch で Notion MCP ツールを一括ロード**（実行冒頭の1回のみ）
+   `select:notion-search,notion-fetch,notion-create-pages,notion-update-data-source`
+
+1. **Deals・Activities を並行取得**
+   - Bash ツールで `echo $NOTION_DEALS_DATA_SOURCE_URL` と `echo $NOTION_ACTIVITIES_DATA_SOURCE_URL` を実行して URL 値を取得
+   - `notion-search` を2件同時に呼び出し、Deals全件・Activities全件をそれぞれ取得（`collection://` URL を直接使用。`view://` URL は非対応のため使わない）
+
+2. **Deal Triage** (`.claude/skills/deal-triage/SKILL.md`):
+   - Deals: ステージフィルタ・45日フィルタ・サニタイズチェックを適用し、評価対象案件を確定
+   - Activities: トリアージ通過案件の ID でメモリ内フィルタリング（API 呼び出し不要）後、`Notes`・`Activity` フィールドにサニタイズチェックを再適用。疑義ありレコードを除外してから Deal Strategist 用データに結合する
+
+3. **Deal Strategist** を `Agent(subagent_type: "sales-deal-strategist")` で起動し、トリアージ通過案件＋紐付け済み Activities から以下を生成:
+   - 圧縮版サマリー（`deals-summary` YAMLブロック）— 後続エージェントへの引き渡し用
+   - 詳細版アセスメント（MEDDPICC表フル形式）— ダッシュボード掲載用
+
+4. **Pipeline Analyst と Sales Coach を並行起動**（圧縮版サマリーのみ渡す）
+   - `Agent(subagent_type: "sales-pipeline-analyst")` ← 圧縮版 + トリアージ通過案件データ
+   - `Agent(subagent_type: "sales-coach")` ← 圧縮版のみ
+   （両エージェントは互いに依存しないため同一メッセージで並行実行する）
+
+5. **Notion ダッシュボードページを作成**（Step 4 の両エージェント完了後）
+   - `notion-create-pages` で `Deal Review Dashboard YYYY-MM-DD` ページを新規作成
+   - 3セクション（DS詳細版 + PA出力 + Coach出力）を1回の API 呼び出しで統合して書き込む
 
 > エージェント定義は `.claude/agents/sales-*.md`。各エージェントは起動時に `.claude/skills/<name>/SKILL.md` のペルソナ定義を読み込む。
-7. ダッシュボードページを Notion に作成（3つのセクションを統合）
